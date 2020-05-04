@@ -5,6 +5,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsView>
+#include <QListView>
 
 #include <segment.h>
 #include <iostream>
@@ -54,6 +55,7 @@ public slots:
 private:
     Ui::MainWindow *ui;
     QGraphicsView* canvas;
+    QListView* results;
     QGraphicsScene scene;
 
     std::set<Segment, SegCompare> segments;

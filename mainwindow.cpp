@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <iostream>
 #include <map>
+#include <QStringListModel>
+
 void MainWindow::addSquare(int x, int y)
 {
     for(int d=0; d<2; d++)
@@ -20,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     canvas = findChild<QGraphicsView*>("canvas");
+    results = findChild<QListView*>("results");
     canvas->setScene(&scene);
 
     for(int x=0; x<=6; x+=2)
@@ -31,8 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
     addSquare(1,1);
     addSquare(3,3);
     addSquare(5,5);
-
-    std::cout << "size=" << segments.size() << std::endl;
 }
 
 MainWindow::~MainWindow()
@@ -84,6 +85,8 @@ int MainWindow::hasSquare(int x, int y, int size) const
 
 void MainWindow::count() const
 {
+    QStringList list;
+
     std::map<int, int> counter;     // [size] = count;
     for(int x=0; x<=7; x++)
     {
@@ -98,8 +101,12 @@ void MainWindow::count() const
     long total=0;
     for(const auto& p: counter)
     {
-        std::cout << p.first << " -> " << p.second << std::endl;
+        //Create Our Item
+        list.append(QString::number(p.first)+QString(" -> ")+QString::number(p.second));
+
         total += p.second;
     }
-    std::cout << "TOTAL " << total << std::endl;
+    list.append(QString("Total: ")+QString::number(total));
+    results->setModel(new QStringListModel(list));
+
 }
