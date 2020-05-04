@@ -44,7 +44,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void addSquare(int x, int y);
+    void addSquare(int x, int y, QPen& pen);
     void count() const;
     int hasSquare(int x, int y, int size) const;
     bool hasSegment(int x, int y, Segment::Dir) const;

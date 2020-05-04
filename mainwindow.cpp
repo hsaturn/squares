@@ -4,15 +4,15 @@
 #include <map>
 #include <QStringListModel>
 
-void MainWindow::addSquare(int x, int y)
+void MainWindow::addSquare(int x, int y, QPen& pen)
 {
     for(int d=0; d<2; d++)
     {
-        segments.insert(Segment(QPoint(x+d, y), Segment::right));
-        segments.insert(Segment(QPoint(x+d, y+2), Segment::right));
+        segments.insert(Segment(QPoint(x+d, y), Segment::right, pen));
+        segments.insert(Segment(QPoint(x+d, y+2), Segment::right, pen));
 
-        segments.insert(Segment(QPoint(x, y+d), Segment::down));
-        segments.insert(Segment(QPoint(x+2, y+d), Segment::down));
+        segments.insert(Segment(QPoint(x, y+d), Segment::down, pen));
+        segments.insert(Segment(QPoint(x+2, y+d), Segment::down, pen));
     }
 }
 
@@ -20,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    QPen color1(QColor(255,0,0), 2);
+    QPen color2(QColor(0,0,255), 2);
     ui->setupUi(this);
     canvas = findChild<QGraphicsView*>("canvas");
     results = findChild<QListView*>("results");
@@ -28,12 +30,12 @@ MainWindow::MainWindow(QWidget *parent) :
     for(int x=0; x<=6; x+=2)
     {
         for(int y=0; y<=6; y+=2)
-            addSquare(x,y);
+            addSquare(x,y, color1);
     }
 
-    addSquare(1,1);
-    addSquare(3,3);
-    addSquare(5,5);
+    addSquare(1,1, color2);
+    addSquare(3,3, color2);
+    addSquare(5,5, color2);
 }
 
 MainWindow::~MainWindow()
@@ -50,7 +52,7 @@ void MainWindow::run()
 
     for(const auto& segment: segments)
     {
-        segment.draw(scene, pen);
+        segment.draw(scene);
     }
 
     count();
@@ -58,7 +60,8 @@ void MainWindow::run()
 
 bool MainWindow::hasSegment(int x, int y, Segment::Dir dir) const
 {
-    Segment srch(QPoint(x,y), dir);
+    static QPen dummy;
+    Segment srch(QPoint(x,y), dir, dummy);
 
     for(const Segment& seg: segments)
     {

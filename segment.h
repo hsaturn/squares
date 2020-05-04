@@ -12,9 +12,9 @@ class Segment
             down = 2
         } Dir;
 
-        Segment(QPoint start, Dir dir) : _start(start), _dir(dir) {}
+        Segment(QPoint start, Dir dir, const QPen& pen) : _start(start), _dir(dir), _pen(pen) {}
 
-        void draw(QGraphicsScene&, const QPen&) const;
+        void draw(QGraphicsScene&) const;
 
         long hash() const
         {
@@ -28,4 +28,5 @@ class Segment
 
         QPoint _start;
         Dir _dir;
+        QPen _pen;
 };

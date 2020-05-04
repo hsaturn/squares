@@ -2,7 +2,7 @@
 
 int Segment::scale_ = 20;
 
-void Segment::draw(QGraphicsScene& scene, const QPen& pen) const
+void Segment::draw(QGraphicsScene& scene) const
 {
     int sx=-100;
     int sy=-100;
@@ -18,5 +18,5 @@ void Segment::draw(QGraphicsScene& scene, const QPen& pen) const
     }
     scene.addLine(_start.x()*scale_+sx,_start.y()*scale_+sy,
                   _start.x()*scale_+sx+dx,_start.y()*scale_+sy+dy,
-                  pen);
+                  _pen);
 }
