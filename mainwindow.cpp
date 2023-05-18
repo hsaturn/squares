@@ -135,7 +135,7 @@ int MainWindow::hasSquare(int x, int y, int size) const
 
 struct QPointCompare
 {
-    bool operator() (const QPoint& x, const QPoint& y)
+    bool operator() (const QPoint& x, const QPoint& y) const
     {
         return (x.x()*100+x.y()) < (y.x()*100+y.y());
     }

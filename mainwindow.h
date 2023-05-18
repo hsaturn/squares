@@ -16,7 +16,7 @@ class MainWindow;
 
 struct SegCompare
 {
-    bool operator()(const Segment& lhs, const Segment& rhs)
+    bool operator()(const Segment& lhs, const Segment& rhs) const
     {
         long h1 = lhs.hash();
         long h2 = rhs.hash();
