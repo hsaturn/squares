@@ -3,39 +3,40 @@
 #include <iostream>
 #include <map>
 #include <QStringListModel>
+#include <stdlib.h>
 
-void MainWindow::addSquare(int x, int y, QPen& pen)
+void MainWindow::addSquare(int x, int y, QPen& pen, int size)
 {
-    for(int d=0; d<2; d++)
+    static int minx=999;
+    static int miny=999;
+    if (x < minx)
+    {
+        minx=x;
+        std::cout << "minx=" << minx << std::endl;
+    }
+    if (y < miny)
+    {
+        miny=y;
+        std::cout << "miny" << miny << std::endl;
+    }
+    for(int d=0; d<size; d++)
     {
         segments.insert(Segment(QPoint(x+d, y), Segment::right, pen));
-        segments.insert(Segment(QPoint(x+d, y+2), Segment::right, pen));
+        segments.insert(Segment(QPoint(x+d, y+size), Segment::right, pen));
 
         segments.insert(Segment(QPoint(x, y+d), Segment::down, pen));
-        segments.insert(Segment(QPoint(x+2, y+d), Segment::down, pen));
+        segments.insert(Segment(QPoint(x+size, y+d), Segment::down, pen));
     }
 }
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    zoom(10)
 {
-    QPen color1(QColor(255,0,0), 2);
-    QPen color2(QColor(0,0,255), 2);
     ui->setupUi(this);
     canvas = findChild<QGraphicsView*>("canvas");
     results = findChild<QListView*>("results");
-    canvas->setScene(&scene);
-
-    for(int x=0; x<=6; x+=2)
-    {
-        for(int y=0; y<=6; y+=2)
-            addSquare(x,y, color1);
-    }
-
-    addSquare(1,1, color2);
-    addSquare(3,3, color2);
-    addSquare(5,5, color2);
 }
 
 MainWindow::~MainWindow()
@@ -43,8 +44,54 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::run()
+void MainWindow::reset()
 {
+    segments.clear();
+    redraw();
+}
+
+void MainWindow::create()
+{
+
+    QPen color1(QColor(255,0,0), 2);
+    QPen color2(QColor(0,0,255), 2);
+    canvas->setScene(&scene);
+
+    /*    for(int x=0; x<=6; x+=2)
+    {
+        for(int y=0; y<=6; y+=2)
+            addSquare(x,y, color1);
+    }
+    addSquare(1,1, color2);
+    addSquare(3,3, color2);
+    addSquare(5,5, color2);
+
+*/
+
+    int max = 3;
+    for(int i=0; i<=3; i++)
+    {
+        int x = rand() % max;
+        int y = rand() % max;
+        int size = 2+rand()%2;
+
+        addSquare(x, y, color1, size);
+        addSquare(max-x-size, y, color1, size);
+        addSquare(x, max-y-size, color1, size);
+        addSquare(max-x-size, max-y-size, color1, size);
+    }
+
+    redraw();
+}
+
+void MainWindow::redraw(int newZoom)
+{
+    if (newZoom != -1)
+    {
+        zoom=newZoom;
+    }
+    Segment::setScale(zoom);
+
     QColor color(0,0,0);
     QPen pen(color, 2);
 
@@ -54,8 +101,8 @@ void MainWindow::run()
     {
         segment.draw(scene);
     }
+    results->setModel(new QStringListModel());
 
-    count();
 }
 
 bool MainWindow::hasSegment(int x, int y, Segment::Dir dir) const
@@ -86,26 +133,50 @@ int MainWindow::hasSquare(int x, int y, int size) const
     return true;
 }
 
-void MainWindow::count() const
+struct QPointCompare
+{
+    bool operator() (const QPoint& x, const QPoint& y)
+    {
+        return (x.x()*100+x.y()) < (y.x()*100+y.y());
+    }
+};
+
+void MainWindow::solve() const
 {
     QStringList list;
+    std::set<QPoint, QPointCompare > points;
+
+    for(const auto& segment: segments)
+    {
+        points.insert(segment.start());
+    }
 
     std::map<int, int> counter;     // [size] = count;
-    for(int x=0; x<=7; x++)
+
+    for(const QPoint& point: points)
     {
-        for(int y=0; y<=7; y++)
+        for(int size=1; size<=20; size++)
         {
-            for(int size=1; size<=8; size++)
+            counter[size] += hasSquare(point.x(), point.y(), size);
+        }
+    }
+    /*
+    for(int x=-5; x<=30; x++)
+    {
+        for(int y=-5; y<=30; y++)
+        {
+            for(int size=1; size<=20; size++)
             {
                 counter[size] += hasSquare(x,y,size);
             }
         }
     }
+    */
     long total=0;
     for(const auto& p: counter)
     {
-        //Create Our Item
-        list.append(QString::number(p.first)+QString(" -> ")+QString::number(p.second));
+        if (p.second)
+            list.append(QString::number(p.first)+QString(" -> ")+QString::number(p.second));
 
         total += p.second;
     }

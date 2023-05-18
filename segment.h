@@ -23,6 +23,8 @@ class Segment
 
         static void setScale(int scale) { scale_ = scale; }
 
+        const QPoint& start() const { return _start; }
+
     private:
         static int scale_;
 

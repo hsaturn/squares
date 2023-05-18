@@ -44,13 +44,16 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void addSquare(int x, int y, QPen& pen);
+    void addSquare(int x, int y, QPen& pen, int segPerSide=2);
     void count() const;
     int hasSquare(int x, int y, int size) const;
     bool hasSegment(int x, int y, Segment::Dir) const;
 
 public slots:
-    void run();
+    void create();
+    void solve() const;
+    void redraw(int zoom = -1);
+    void reset();
 
 private:
     Ui::MainWindow *ui;
@@ -59,6 +62,7 @@ private:
     QGraphicsScene scene;
 
     std::set<Segment, SegCompare> segments;
+    int zoom;
 };
 
 #endif // MAINWINDOW_H

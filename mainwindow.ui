@@ -7,22 +7,64 @@
     <x>0</x>
     <y>0</y>
     <width>607</width>
-    <height>490</height>
+    <height>516</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Square Counter</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Run</string>
-      </property>
-     </widget>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QPushButton" name="btnDraw">
+        <property name="text">
+         <string>Draw</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnSolve">
+        <property name="text">
+         <string>Solve</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnClear">
+        <property name="text">
+         <string>Reset</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
-    <item row="1" column="0">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Zoom</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="zoomSlider">
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
+        <property name="minimum">
+         <number>5</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QGraphicsView" name="canvas"/>
@@ -72,23 +114,75 @@
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton</sender>
+   <sender>btnDraw</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
-   <slot>run()</slot>
+   <slot>create()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>307</x>
-     <y>70</y>
+     <x>62</x>
+     <y>33</y>
     </hint>
     <hint type="destinationlabel">
-     <x>386</x>
-     <y>45</y>
+     <x>86</x>
+     <y>71</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnSolve</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>solve()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>357</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>185</x>
+     <y>95</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zoomSlider</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>redraw(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>348</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>430</x>
+     <y>92</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnClear</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>reset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>491</x>
+     <y>40</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>769</x>
+     <y>161</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
   <slot>run()</slot>
+  <slot>create()</slot>
+  <slot>solve()</slot>
+  <slot>redraw(int)</slot>
+  <slot>reset()</slot>
  </slots>
 </ui>
